@@ -5,7 +5,7 @@ from typing import Any
 from aiohttp import ClientSession
 from flogin import ErrorResponse, Plugin, Query, QueryResponse, Settings
 
-from .results import Result, SendMessageResult, UpdateQueryResult
+from .results import DisplayWebhookResult, Result, SendMessageResult
 
 log = logging.getLogger(__name__)
 
@@ -62,6 +62,7 @@ async def send_from_url(query: Query[re.Match]):
 
     url = f"https://discord.com/api/webhooks/{query.condition_data['channel_id']}/{query.condition_data['slug']}"
     parts = query.text.split(" ")
+
     return SendMessageResult(url, " ".join(parts[1:]).strip())
 
 
@@ -73,8 +74,9 @@ async def index_handler(query: Query):
             score=1000,
         ),
         *(
-            UpdateQueryResult(
-                f"{query.keyword} {key} ",
+            DisplayWebhookResult(
+                query.keyword,
+                key,
                 title=f"Send a message to the {key} webhook",
                 sub=value,
             )

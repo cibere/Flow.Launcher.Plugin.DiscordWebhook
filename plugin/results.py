@@ -18,19 +18,43 @@ class Result(_Result["DiscordPlugin"]):
         super().__init__(**kwargs)
 
 
-class UpdateQueryResult(Result):
+class DisplayWebhookResult(Result):
     def __init__(
-        self, new_query: str, **kwargs: Unpack[ResultConstructorKwargs]
+        self, keyword: str, name: str, **kwargs: Unpack[ResultConstructorKwargs]
     ) -> None:
-        kwargs["auto_complete_text"] = new_query
-        self.new_query = new_query
-
+        self.new_query = kwargs["auto_complete_text"] = f"{keyword} {name} "
+        self.name = name
         super().__init__(**kwargs)
 
     async def callback(self):
         assert self.plugin
 
         await self.plugin.api.change_query(self.new_query)
+        return False
+
+    async def context_menu(self):
+        assert self.plugin
+
+        return RemoveWebhookResult(self.name, title="Remove Webhook")
+
+
+class RemoveWebhookResult(Result):
+    def __init__(self, name: str, **kwargs: Unpack[ResultConstructorKwargs]) -> None:
+        self.name = name
+        super().__init__(**kwargs)
+
+    async def callback(self):
+        assert self.plugin
+
+        self.plugin.settings.webhooks = "\n".join(
+            line
+            for line in (self.plugin.settings.webhooks or "").splitlines()
+            if not line.replace(" ", "").startswith(f"{self.name}!")
+        )
+        await self.plugin.api.show_notification(
+            "Discord Webhook",
+            f"Removed the {self.name} webhook. Note: for this to take affect, you must query the plugin again.",
+        )
         return False
 
 
