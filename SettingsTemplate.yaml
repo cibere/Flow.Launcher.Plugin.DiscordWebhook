@@ -4,5 +4,5 @@ body:
       name: webhooks
       label: Saved Webhooks
       description: >
-        This text will be added to the beginning of the result output. For example, if you set this to 
-        "The result is: ", and the result is "42", the output will be "The result is: 42". 
+        Each line will be treated as its own webhook, with the following format: `name!url`
+        for example: `foo!https://ptb.discord.com/api/webhooks/1348721137839902741/tvQaNfMS917XypWj7fSskiASiKK5ovxMwDeNU-6_GIjeIQu-rBvFuoor_pUfealHCXai`
