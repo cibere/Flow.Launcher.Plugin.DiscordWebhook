@@ -1,0 +1,12 @@
+{
+    "ID": "71faf57f-53e5-4637-b01c-b39d3ea3b2bf",
+    "ActionKeyword": "dischook",
+    "Name": "Discord Webhook",
+    "Description": "send messages through discord webhooks",
+    "Author": "cibere",
+    "Version": "0.0.1a",
+    "Language": "python_v2",
+    "Website": "https://github.com/cibere/Flow.Launcher.Plugin.DiscordWebhook",
+    "IcoPath": "assets/app.png",
+    "ExecuteFileName": "main.py"
+}
