@@ -26,13 +26,13 @@ class DisplayWebhookResult(Result):
         self.name = name
         super().__init__(**kwargs)
 
-    async def callback(self):
+    async def callback(self) -> bool:
         assert self.plugin
 
         await self.plugin.api.change_query(self.new_query)
         return False
 
-    async def context_menu(self):
+    async def context_menu(self) -> Result:
         assert self.plugin
 
         return RemoveWebhookResult(self.name, title="Remove Webhook")
@@ -43,7 +43,7 @@ class RemoveWebhookResult(Result):
         self.name = name
         super().__init__(**kwargs)
 
-    async def callback(self):
+    async def callback(self) -> bool:
         assert self.plugin
 
         self.plugin.settings.webhooks = "\n".join(
@@ -66,9 +66,10 @@ class SendMessageResult(Result):
         super().__init__(
             title=f"Do you want to send the message to {url}?",
             sub=f"Message: {message}",
+            score=1000,
         )
 
-    async def callback(self):
+    async def callback(self) -> bool:
         assert self.plugin
         assert self.plugin.last_query
 
@@ -87,4 +88,36 @@ class SendMessageResult(Result):
             )
 
         await self.plugin.last_query.update_results([res])
+        return False
+
+
+class AddPresetResult(Result):
+    def __init__(self, url: str, kw: str) -> None:
+        self.url = url
+        self.kw = kw
+
+        super().__init__(
+            title="Do you want to add this url as a preset?",
+            sub=f"Keyword for preset: {kw!r}",
+        )
+
+    async def callback(self) -> bool:
+        assert self.plugin
+        assert self.plugin.last_query
+
+        if self.kw in self.plugin.webhooks:
+            await self.plugin.api.show_error_message(
+                "Discord Webhooks",
+                f"There is already a preset with the {self.kw!r} keyword.",
+            )
+        else:
+            self.plugin.settings.webhooks = (
+                ""
+                if self.plugin.settings.webhooks is None
+                else f"{self.plugin.settings.webhooks}\n"
+            ) + f"{self.kw}!{self.url}"
+
+            await self.plugin.api.show_notification(
+                "Discord Webhooks", f"Added the {self.kw!r} preset"
+            )
         return False

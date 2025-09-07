@@ -1,3 +1,5 @@
 discord.py==2.5.2
 flogin @ git+https://github.com/cibere/flogin@55b6ebdacdbeb3d07a73547fc8aef36263261f7e
-aiohttp==3.11.13
+aiohttp==3.12.15
+aioconsole==0.8.1
+typing-extensions==4.15.0
