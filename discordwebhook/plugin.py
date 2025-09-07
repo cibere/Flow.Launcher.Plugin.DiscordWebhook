@@ -23,7 +23,7 @@ class DiscordPlugin(Plugin[PluginSettings]):
             raw = self.settings.webhooks or ""
             return {
                 parts[0].strip(): parts[1].strip()
-                for line in raw.splitlines()
+                for line in raw.strip().splitlines()
                 if (parts := line.split("!"))
             }
         except Exception as e:

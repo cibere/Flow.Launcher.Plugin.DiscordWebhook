@@ -114,8 +114,8 @@ class AddPresetResult(Result):
             self.plugin.settings.webhooks = (
                 ""
                 if self.plugin.settings.webhooks is None
-                else f"{self.plugin.settings.webhooks}\n"
-            ) + f"{self.kw}!{self.url}"
+                else self.plugin.settings.webhooks
+            ) + f"\n{self.kw}!{self.url}"
 
             await self.plugin.api.show_notification(
                 "Discord Webhooks", f"Added the {self.kw!r} preset"
